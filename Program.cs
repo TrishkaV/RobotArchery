@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ShellProgressBar;
 
 namespace RobotArchery
 {
@@ -31,13 +29,26 @@ namespace RobotArchery
         {
             var scoreboard = new int[archers.Count];
 
-            Parallel.For(0, nOfIterations, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, _ =>
+            var options = new ProgressBarOptions
             {
-                var winnerName = Tournament();
-                var winnerIndex = archers.FindIndex(x => x.name == winnerName);
+                ProgressCharacter = '─',
+                ProgressBarOnBottom = true
+            };
 
-                scoreboard[winnerIndex]++;
-            });
+            using (var pbar = new ProgressBar(nOfIterations, $"Running {nOfIterations} parallel simulations...", options))
+            {
+
+                Parallel.For(0, nOfIterations, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, _ =>
+                {
+                    var winnerName = new Tournament().RunTournament(in archers, in target);
+                    var winnerIndex = archers.FindIndex(x => x.name == winnerName);
+
+                    lock (scoreboard)
+                        scoreboard[winnerIndex]++;
+
+                    pbar.Tick($" -- Simulations run: {scoreboard.Sum()}");
+                });
+            }
 
             // for (int i = 0; i < nOfIterations; i++)
             // {
@@ -49,37 +60,7 @@ namespace RobotArchery
 
             return scoreboard;
         }
-        private static string? Tournament()
-        {
-            var currentArchers = new List<Archer>(archers);
-            currentArchers.Reverse();
-            var currentBestScore = new KeyValuePair<string, double>("", double.MaxValue);
 
-            do
-            {
-                /* currentArchers goes from last to first and reads backwards (thus reading it forward),
-				 * this allows to remove items from it without affecting the index
-				 */
-                for (int i = currentArchers.Count - 1; i >= 0; i--)
-                {
-                    if (currentArchers.Count == 1)
-                        return currentBestScore.Key;
-
-                    var hit = currentArchers[i].Shoot(target);
-
-                    if (hit < currentBestScore.Value)
-                        currentBestScore = new KeyValuePair<string, double>(currentArchers[i].name, hit);
-                    else
-                        currentArchers.RemoveAt(i);
-                }
-
-                if (currentArchers.Count == 0)
-                    throw new Exception("Out of archers, this should not happen!");
-            }
-            while (currentArchers.Count != 1);
-
-            return currentBestScore.Key;
-        }
         private static int GetIterationsFromUser()
         {
             Console.WriteLine("The more iterations we run and the closest we get to the mathematical approximation" +
@@ -99,8 +80,6 @@ namespace RobotArchery
                 {
                 }
             }
-
-            Console.WriteLine($"Running {nOfIterations} parallel simulations...");
 
             return nOfIterations;
         }
