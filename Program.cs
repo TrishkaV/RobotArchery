@@ -35,9 +35,9 @@ namespace RobotArchery
                 ProgressBarOnBottom = true
             };
 
-            using (var pbar = new ProgressBar(nOfIterations, $"Running {nOfIterations} parallel simulations...", options))
+            Console.WriteLine($"Running {nOfIterations} parallel simulations...");
+            using (var pbar = new ProgressBar(nOfIterations, "", options))
             {
-
                 Parallel.For(0, nOfIterations, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, _ =>
                 {
                     var winnerName = new Tournament().RunTournament(in archers, in target);
