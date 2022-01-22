@@ -21,7 +21,7 @@ The whole execution can be as brief as <30s on consumer hardware, that's thanks 
 2. Many simulations are run at once using Multithreading, as many threads as supported by the CPU are run at a given time. This actually uses all the computational power of the running hardware and is way quicker that a vanilla For loop, there is a cap on the number of threads used to not overwhelm the host machine.
 
 
-Give it a try, a compiled exevutable is available in the Release folder (just make sure you have .NET 6 installed). 
+Give it a try, a compiled exevutable is available in the **Release** folder (just make sure you have .NET 6 installed). 
 
 If you're running Linux remember to use `chmod u+x RobotArchery` before launching the program.
 
