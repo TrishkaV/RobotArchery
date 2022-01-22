@@ -13,7 +13,7 @@ and get to the solution --> 0.18343765086
 
 **This program is a logic exercice, we instead simulate many iterations (millions!) of the tournament to get the result, the more iterations we run and the closest we get to the result in the formula above.**
 
-
+The program is written for **.NET 6** framework.
 
 The whole execution can be as brief as <30s on consumer hardware, that's thanks to some design perks:
 
@@ -21,5 +21,10 @@ The whole execution can be as brief as <30s on consumer hardware, that's thanks 
 2. Many simulations are run at once using Multithreading, as many threads as supported by the CPU are run at a given time. This actually uses all the computational power of the running hardware and is way quicker that a vanilla For loop, there is a cap on the number of threads used to not overwhelm the host machine.
 
 
-Give it a try, a compiled exevutable is available in the Release folder.
+Give it a try, a compiled exevutable is available in the Release folder (just make sure you have .NET 6 installed). 
 
+If you're running Linux remember to use `chmod u+x RobotArchery` before launching the program.
+
+
+
+Thank you for visiting this project.
